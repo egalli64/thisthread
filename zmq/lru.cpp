@@ -1,3 +1,15 @@
+/**
+ * For more information see:
+ *
+ * http://thisthread.blogspot.com/2012/04/lru-pattern-client.html
+ * http://thisthread.blogspot.com/2012/04/lru-pattern-worker.html
+ * http://thisthread.blogspot.com/2012/04/lru-pattern-putting-all-together.html
+ *
+ * This code is based on the design and the C implementation provided by the ZGuide:
+ *
+ * http://zguide.zeromq.org/page:all#Least-Recently-Used-Routing-LRU-Pattern
+ */
+
 #include <iostream>
 #include <string>
 #include <algorithm>
