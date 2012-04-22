@@ -1,3 +1,10 @@
+/**
+ * Extending zmq::socket_t to send/receive multipart messages.
+ *
+ * More information here: http://thisthread.blogspot.com/2012/04/extending-zmqsockett.html
+ * Inspired by czmq, as described in the ZGuide: http://zguide.zeromq.org/page:all#A-High-Level-API-for-MQ
+ */
+
 #pragma once
 
 #include <cstdint>
@@ -15,15 +22,9 @@ namespace zmq
 
         Socket(context_t& context, int type, const std::string& id) : socket_t(context, type)
         {
-            zmq_setsockopt(this->operator void *(), ZMQ_IDENTITY, id.c_str(), id.length());
+            zmq_setsockopt(this->operator void*(), ZMQ_IDENTITY, id.c_str(), id.length());
         }
-
-        bool sendSeparator()
-        {
-            zmq::message_t msg;
-            return socket_t::send(msg, ZMQ_SNDMORE);
-        }
-
+ 
         bool send(const std::string& frame, int flags =0)
         {
             zmq::message_t msg(frame.length());
@@ -33,13 +34,10 @@ namespace zmq
 
         bool send(const Frames& frames)
         {
-            // trivial cases
             if(!frames.size())
-                return false;
-            if(frames.size() == 1)
-                return send(frames[0]);
+                throw error_t();
 
-            // more than one frame
+            // all frames but last one
             for(unsigned int i = 0; i < frames.size() - 1; ++i)
             {
                 if(!send(frames[i], ZMQ_SNDMORE))
@@ -93,12 +91,21 @@ namespace zmq
             return std::string(base, base + message.size());
         }
     private:
-        int sockopt_rcvmore()
+        Socket(const Socket&);
+        void operator=(const Socket&);
+
+        bool sendSeparator()
+        {
+            zmq::message_t msg;
+            return socket_t::send(msg, ZMQ_SNDMORE);
+        }
+
+        bool sockopt_rcvmore()
         {
             int64_t rcvmore;
-            size_t type_size = sizeof (int64_t);
+            size_t type_size = sizeof(int64_t);
             getsockopt(ZMQ_RCVMORE, &rcvmore, &type_size);
-            return static_cast<int>(rcvmore);
+            return rcvmore ? true : false;
         }
     };
 }
