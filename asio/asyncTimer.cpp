@@ -1,3 +1,9 @@
+/**
+ * For code comments see: http://thisthread.blogspot.com/2011/02/simple-deadline-timer.html
+ *
+ * Boost ASIO example based on: http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/tutorial/tuttimer2.html
+ */
+
 #include <iostream>
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
