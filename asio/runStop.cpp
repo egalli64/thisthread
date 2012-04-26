@@ -1,3 +1,6 @@
+/**
+ * For information and comments see: http://thisthread.blogspot.com/2012/04/run-and-stop-asio-io-service.html
+ */
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
