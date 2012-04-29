@@ -1,4 +1,9 @@
-// Based on http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/tutorial/tuttimer5/src.html
+/**
+ * Boost ASIO strand post example
+ * For information and comments see: http://thisthread.blogspot.com/2012/04/post-on-asio-strand.html
+ *
+ * Based on http://www.boost.org/doc/libs/1_49_0/doc/html/boost_asio/tutorial/tuttimer5/src.html
+ */
 
 #include <iostream>
 #include <boost/asio.hpp>
@@ -19,18 +24,6 @@ namespace
             std::cout << boost::this_thread::get_id() << ' ' << msg << ' ' << count_ << std::endl;
         }
 
-    public:
-        Printer(ba::io_service& aios, int count) : strand_(aios), count_(count)
-        {
-            strand_.post(std::bind(&Printer::print1, this));
-            strand_.post(std::bind(&Printer::print2, this));
-        }
-
-        ~Printer()
-        {
-            print("dtor");
-        }
-
         void print1()
         {
             if(count_ > 0)
@@ -49,6 +42,18 @@ namespace
                 --count_;
                 strand_.post(std::bind(&Printer::print2, this));
             }
+        }
+
+    public:
+        Printer(ba::io_service& aios, int count) : strand_(aios), count_(count)
+        {
+            strand_.post(std::bind(&Printer::print1, this));
+            strand_.post(std::bind(&Printer::print2, this));
+        }
+
+        ~Printer()
+        {
+            print("dtor");
         }
     };
 }
