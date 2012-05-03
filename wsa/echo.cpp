@@ -1,6 +1,7 @@
 /**
  * Simple echo winsock application
  * Information and comments on the server: http://thisthread.blogspot.com/2012/05/hello-windows-sockets-2-server.html
+ * Ditto for client: http://thisthread.blogspot.com/2012/05/hello-windows-sockets-2-client.html
  *
  * Loosely based on http://msdn.microsoft.com/en-us/library/windows/desktop/ms738545(v=vs.85).aspx
  */
@@ -120,7 +121,6 @@ namespace
             return;
         }
 
-        // Receive data until the server closes the connection
         do {
             char buffer[BUFLEN];
             size = recv(sk, buffer, BUFLEN, 0);
@@ -192,8 +192,7 @@ namespace
     void client(const char* host, const char* port)
     {
         std::cout << "Client socket" << std::endl;
-
-        std::cout << "Specifying the socket characteristic" << std::endl;
+        std::cout << "specifying the socket characteristic" << std::endl;
         ADDRINFO hints;
         wsa::set(hints, 0, AF_UNSPEC, SOCK_STREAM, IPPROTO_TCP); // both TCP IP v4/v6 are accepted
 
@@ -216,8 +215,7 @@ namespace
     void server(const char* port)
     {
         std::cout << "Server socket" << std::endl;
-
-        std::cout << "Specifing the socket characteristic" << std::endl;
+        std::cout << "specifying the socket characteristic" << std::endl;
         ADDRINFO hints;
         wsa::set(hints, AI_PASSIVE, AF_INET, SOCK_STREAM, IPPROTO_TCP); // server (passive) TCP v4
 
@@ -236,7 +234,7 @@ namespace
     }
 }
 
-void simple(bool isServer, const char* host, const char* port)
+void echo(bool isServer, const char* host, const char* port)
 {
     std::cout << "Initializing Winsock" << std::endl;
     WSADATA wsaData;
