@@ -98,9 +98,8 @@ namespace
             for(int i = 0; i < nWorkers; ++i)
                 thWorkers_.create_thread(std::bind(worker, std::ref(context_)));
 
-            boost::thread_group thClients;
             for(int i = 0; i < nClients; ++i)
-                thClients.create_thread(std::bind(client, std::ref(context_)));
+                thClients_.create_thread(std::bind(client, std::ref(context_)));
         }
 
         void poll()
