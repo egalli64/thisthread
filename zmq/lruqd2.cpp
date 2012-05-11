@@ -59,21 +59,21 @@ namespace
         zmq::Socket skWorker(context, ZMQ_REQ, id);
         skWorker.connect(SK_ADDR_BACKEND);
 
-        zmq::Frames frames(2);
+        zmq::Frames frames(3);
         while(true)
         {
             // sending a request (first time is dummy)
             skWorker.send(frames);
 
-            // receving dummy || clientID, payload
-            frames = skWorker.blockingRecv(2, false);
-            if(frames.size() != 2)
+            // receving dummy || clientID, "", payload
+            frames = skWorker.blockingRecv(3, false);
+            if(frames.size() != 3)
             {
                 dump(id, "terminating");
                 return;
             }
             dump(frames[0], "client id");
-            dump(frames[1], "payload");
+            dump(frames[2], "payload");
         }
     }
 
@@ -131,9 +131,10 @@ namespace
                 dump(id, "Terminating worker");
 
                 zmq::Frames frames;
-                frames.reserve(2);
+                frames.reserve(3);
                 frames.push_back(id);
-                frames.push_back("");  // sending a fake client address as terminator
+                frames.push_back("");   // separator
+                frames.push_back("");   // fake client address as terminator
                 backend_.send(frames);
             }
         }
@@ -147,25 +148,25 @@ namespace
 
         void receivingOnBackend()
         {
-            zmq::Frames input = backend_.blockingRecv(3, false); // workerID (, clientID, payload)
+            zmq::Frames input = backend_.blockingRecv(5, false); // workerID (, "", clientID, "", payload)
 
             // adding the worker on queue
             dump(input[0], "registering worker");
             qWorkers_.push(input[0]);
 
-            if(input.size() == 3) // full message
+            if(input.size() == 5) // full message
             { // forward to the frontend
-                zmq::Frames output(input.begin() + 1, input.end()); // discarding workerID
+                zmq::Frames output(input.begin() + 2, input.end()); // discarding workerID (and first separator)
                 frontend_.send(output);
             }
         }
 
         void receivingOnFrontend()
         {
-            zmq::Frames input = frontend_.blockingRecv(2); // clientID, payload
+            zmq::Frames input = frontend_.blockingRecv(3); // clientID, "", payload
 
             dump(input[0], "client id received on frontend");
-            dump(input[1], "payload received on frontend");
+            dump(input[2], "payload received on frontend");
 
             // picking up a worker
             std::string id = qWorkers_.front();
@@ -173,8 +174,9 @@ namespace
             dump(id, "selected worker on frontend");
 
             zmq::Frames output;
-            output.reserve(3); // workerID, clientID, payload
+            output.reserve(5); // workerID, "", clientID, "", payload
             output.push_back(id);
+            output.push_back("");
             output.insert(output.end(), input.begin(), input.end());
 
             backend_.send(output);
