@@ -39,18 +39,14 @@ namespace zmq
 
             // all frames but last one
             for(unsigned int i = 0; i < frames.size() - 1; ++i)
-            {
                 if(!send(frames[i], ZMQ_SNDMORE))
                     return false;
-                if(!sendSeparator())
-                    return false;
-            }
             // last frame
             return send(frames.back());
         }
 
         /*
-            n: expected number of frames
+            n: expected number of frames, including separators
          */
         Frames blockingRecv(int n, bool checked =true)
         {
@@ -63,16 +59,8 @@ namespace zmq
                 if(!socket_t::recv(&message, 0))
                     throw error_t();
 
-                if(!(currentFrame++ % 2))
-                { // skipping separators
-                    if(message.size())
-                        throw error_t();
-                }
-                else
-                {
-                    const char* base = static_cast<const char*>(message.data());
-                    frames.push_back(std::string(base, base + message.size()));
-                }
+                const char* base = static_cast<const char*>(message.data());
+                frames.push_back(std::string(base, base + message.size()));
             } while(sockopt_rcvmore());
 
             if(checked && frames.size() != n)
@@ -93,12 +81,6 @@ namespace zmq
     private:
         Socket(const Socket&);
         void operator=(const Socket&);
-
-        bool sendSeparator()
-        {
-            zmq::message_t msg;
-            return socket_t::send(msg, ZMQ_SNDMORE);
-        }
 
         bool sockopt_rcvmore()
         {
