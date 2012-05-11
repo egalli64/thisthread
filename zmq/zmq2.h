@@ -53,7 +53,6 @@ namespace zmq
             Frames frames;
             frames.reserve(n);
 
-            int currentFrame = 1;
             do {
                 zmq::message_t message;
                 if(!socket_t::recv(&message, 0))
