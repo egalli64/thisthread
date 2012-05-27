@@ -2,6 +2,7 @@
  * Extending zmq::socket_t to send/receive multipart messages.
  *
  * More information here: http://thisthread.blogspot.com/2012/04/extending-zmqsockett.html
+ * Improved multipart send discussed here: http://thisthread.blogspot.com/2012/05/improved-sending-for-zmqsocket.html
  * Inspired by czmq, as described in the ZGuide: http://zguide.zeromq.org/page:all#A-High-Level-API-for-MQ
  */
 
@@ -27,9 +28,48 @@ namespace zmq
  
         bool send(const std::string& frame, int flags =0)
         {
-            zmq::message_t msg(frame.length());
-            memcpy(msg.data(), frame.c_str(), frame.length());
-            return socket_t::send(msg, flags);
+            return send(frame.c_str(), frame.length(), flags);
+        }
+
+        bool send(const char* frame, int flags =0)
+        {
+            return send(frame, strlen(frame), flags);
+        }
+
+        bool send(const std::string& frame1, const std::string& frame2)
+        {
+            if(!send(frame1, ZMQ_SNDMORE))
+                return false;
+            // last frame
+            return send(frame2);
+        }
+
+        bool send(const char* frame1, const char* frame2)
+        {
+            if(!send(frame1, ZMQ_SNDMORE))
+                return false;
+            // last frame
+            return send(frame2);
+        }
+
+        bool send(const std::string& frame1, const std::string& frame2, const std::string& frame3)
+        {
+            if(!send(frame1, ZMQ_SNDMORE))
+                return false;
+            if(!send(frame2, ZMQ_SNDMORE))
+                return false;
+            // last frame
+            return send(frame3);
+        }
+
+        bool send(const char* frame1, const char* frame2, const char* frame3)
+        {
+            if(!send(frame1, ZMQ_SNDMORE))
+                return false;
+            if(!send(frame2, ZMQ_SNDMORE))
+                return false;
+            // last frame
+            return send(frame3);
         }
 
         bool send(const Frames& frames)
@@ -87,6 +127,13 @@ namespace zmq
             size_t type_size = sizeof(int64_t);
             getsockopt(ZMQ_RCVMORE, &rcvmore, &type_size);
             return rcvmore ? true : false;
+        }
+
+        bool send(const char* frame, size_t len, int flags =0)
+        {
+            zmq::message_t msg(len);
+            memcpy(msg.data(), frame, len);
+            return socket_t::send(msg, flags);
         }
     };
 }
