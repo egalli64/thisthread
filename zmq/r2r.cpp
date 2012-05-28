@@ -1,3 +1,8 @@
+/**
+ * ZeroMQ Router to Router examples.
+ * For details and comments see http://thisthread.blogspot.com/2012/05/router-to-router.html
+ * and http://thisthread.blogspot.com/2012/05/another-router-to-router-example.html
+ */
 #include <iostream>
 #include <string>
 #include <boost/thread.hpp>
