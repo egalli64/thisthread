@@ -3,6 +3,7 @@
  *
  * More information here: http://thisthread.blogspot.com/2012/04/extending-zmqsockett.html
  * Improved multipart send discussed here: http://thisthread.blogspot.com/2012/05/improved-sending-for-zmqsocket.html
+ * Int messages: http://thisthread.blogspot.com/2012/05/sendingreceiving-ints-over-zeromq.html
  * Inspired by czmq, as described in the ZGuide: http://zguide.zeromq.org/page:all#A-High-Level-API-for-MQ
  */
 
@@ -85,6 +86,13 @@ namespace zmq
             return send(frames.back());
         }
 
+        bool send(int value, int flags =0)
+        {
+            zmq::message_t msg(sizeof(int));
+            memcpy(msg.data(), &value, sizeof(int));
+            return socket_t::send(msg, flags);
+        }
+
         /*
             n: expected number of frames, including separators
          */
@@ -116,6 +124,15 @@ namespace zmq
 
             const char* base = static_cast<const char*>(message.data());
             return std::string(base, base + message.size());
+        }
+
+        int recvAsInt(int flags =0)
+        {
+            zmq::message_t message;
+            if(!socket_t::recv(&message, flags))
+                throw error_t();
+
+            return *(static_cast<int*>(message.data()));
         }
     private:
         Socket(const Socket&);
