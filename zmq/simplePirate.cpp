@@ -1,4 +1,7 @@
 /**
+ * Simple Pirate Pattern implemented for C++ and zmq::Socket
+ * 
+ * Details and comments: http://thisthread.blogspot.com/2012/06/improved-lru-with-basic-reliable.html
  * Based on the ZGuide: http://zguide.zeromq.org/page:all#Basic-Reliable-Queuing-Simple-Pirate-Pattern
  */
 #include <iostream>
