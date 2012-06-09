@@ -1,10 +1,11 @@
 /**
- * Extending zmq::socket_t to send/receive multipart messages.
+ * Extending zmq::socket_t to send/receive multipart messages. Version 2.
  *
+ * New version based on deque: http://thisthread.blogspot.com/2012/06/zeromq-multipart-message-as-deque.html
  * More information on first implementation: http://thisthread.blogspot.com/2012/04/extending-zmqsockett.html
  * Improved multipart send: http://thisthread.blogspot.com/2012/05/improved-sending-for-zmqsocket.html
  * Int messages: http://thisthread.blogspot.com/2012/05/sendingreceiving-ints-over-zeromq.html
- * Frames as a string deque:
+ *
  * Inspired by czmq, as described in the ZGuide: http://zguide.zeromq.org/page:all#A-High-Level-API-for-MQ
  */
 
