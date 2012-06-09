@@ -1,5 +1,7 @@
 /**
  * Extending zmq::socket_t to send/receive multipart messages.
+ * This is the first version, where Frames is a std::vector, now deprecated.
+ * In the second version Frames is a std::deque, see: http://thisthread.blogspot.com/2012/06/zeromq-multipart-message-as-deque.html
  *
  * More information here: http://thisthread.blogspot.com/2012/04/extending-zmqsockett.html
  * Improved multipart send discussed here: http://thisthread.blogspot.com/2012/05/improved-sending-for-zmqsocket.html
