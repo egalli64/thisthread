@@ -2,6 +2,8 @@
  * Extending zmq::socket_t to send/receive multipart messages. Version 2.
  *
  * New version based on deque: http://thisthread.blogspot.com/2012/06/zeromq-multipart-message-as-deque.html
+ * Single byte send/recv: http://thisthread.blogspot.com/2012/06/sending-and-receiving-single-byte.html
+
  * More information on first implementation: http://thisthread.blogspot.com/2012/04/extending-zmqsockett.html
  * Improved multipart send: http://thisthread.blogspot.com/2012/05/improved-sending-for-zmqsocket.html
  * Int messages: http://thisthread.blogspot.com/2012/05/sendingreceiving-ints-over-zeromq.html
@@ -95,6 +97,13 @@ namespace zmq
             return socket_t::send(msg, flags);
         }
 
+        bool send(uint8_t value, int flags =0)
+        {
+            zmq::message_t msg(sizeof(uint8_t));
+            memcpy(msg.data(), &value, sizeof(uint8_t));
+            return socket_t::send(msg, flags);
+        }
+
         Frames blockingRecv()
         {
             Frames frames;
@@ -127,6 +136,15 @@ namespace zmq
                 throw error_t();
 
             return *(static_cast<int*>(message.data()));
+        }
+
+        uint8_t recvAsByte(int flags =0)
+        {
+            zmq::message_t message;
+            if(!socket_t::recv(&message, flags))
+                throw error_t();
+
+            return *(static_cast<uint8_t*>(message.data()));
         }
     private:
         Socket(const Socket&);
