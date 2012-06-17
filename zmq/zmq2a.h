@@ -31,6 +31,11 @@ namespace zmq
             zmq_setsockopt(this->operator void*(), ZMQ_IDENTITY, id.c_str(), id.length());
         }
  
+        bool setLinger(int linger = -1)
+        {
+            return zmq_setsockopt(this->operator void*(), ZMQ_LINGER, &linger, sizeof(int)) == 0;
+        }
+
         bool send(const std::string& frame, int flags =0)
         {
             return send(frame.c_str(), frame.length(), flags);
