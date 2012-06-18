@@ -1,5 +1,6 @@
 /**
  * Heartbeating for Paranoid Pirate: http://thisthread.blogspot.com/2012/06/paranoid-pirate-heartbeating.html
+ * Server part disscussed here: http://thisthread.blogspot.com/2012/06/paranoid-pirate-heartbeating-server.html
  * Based on the ZGuide: http://zguide.zeromq.org/page:all#Robust-Reliable-Queuing-Paranoid-Pirate-Pattern
  */
 
@@ -127,7 +128,7 @@ private:
     enum { INTERVAL = 1000, BUSY = 5 };
 public:
     HeartbeatServer(int lifespan = INT_MAX) : context_(1), backend_(context_, ZMQ_ROUTER), lifespan_(lifespan), 
-        heartbeat_(bp::microsec_clock::local_time() + bp::millisec(INTERVAL))
+        heartbeat_(bp::microsec_clock::local_time() + bp::millisec(INTERVAL)), busy_(BUSY)
     {
         backend_.bind(SKA_BACKEND_SRV);
         backend_.setLinger(0);
@@ -136,15 +137,13 @@ public:
         items_[0].fd = 0;
         items_[0].events = ZMQ_POLLIN;
         items_[0].revents = 0;
-
-        busy_ = BUSY;
     }
 
     bool isAlive()
     {
         return busy_ > 0 && lifespan_ > 0;
     }
-
+/*
     bool poll()
     {
         --lifespan_;
@@ -158,16 +157,26 @@ public:
         --busy_;
         return false;
     }
-
+ */
     zmq::Frames recv()
     {
-        if(items_[0].revents & ZMQ_POLLIN)
+        --lifespan_;
+
+        zmq::Frames res;
+        if(zmq::poll(items_, 1, INTERVAL * 1000) > 0)
         {
+            busy_ = BUSY;
+
+            if(items_[0].revents & ZMQ_POLLIN)
+                res = backend_.blockingRecv();
             items_[0].revents = 0;
-            return backend_.blockingRecv();
+
+            return res;
         }
         else
-            return zmq::Frames(); // no message
+            --busy_;
+
+        return res; // no message
     }
 
     void heartbeat()
@@ -214,7 +223,6 @@ public:
         else
             dumpId(id.c_str(), "not a pending worker");
     }
-
 };
 
 namespace
@@ -226,16 +234,10 @@ namespace
 
         while(server.isAlive())
         {
-            if(!server.poll())
-            {
-                dumpId("server idle");
-                continue;
-            }
-
             zmq::Frames input = server.recv();
             if(!input.empty())
             {
-                char control = (input.size() != 2 || input[1].empty()) ? PHB_UNEXPECTED : input[1].at(0);
+                uint8_t control = (input.size() != 2 || input[1].empty()) ? PHB_UNEXPECTED : input[1].at(0);
 
                 switch(control)
                 {
@@ -256,6 +258,8 @@ namespace
                     break;
                 }
             }
+            else
+                dumpId("server idle");
 
             server.heartbeat();
         }
@@ -295,7 +299,6 @@ namespace
 
                 if(iteration++ == nrMsg)
                     break;
-                worker.heartbeat();
             }
             else // polling succeeeded
             {
@@ -307,6 +310,7 @@ namespace
                     dumpId("invalid message", control);
                 cycle = patience = 0;
             }
+            worker.heartbeat();
         }
         worker.shutdown();
         dumpId("worker shutdown");
@@ -327,9 +331,9 @@ void heartbeating()
     {
         boost::thread_group threads;
         threads.create_thread(std::bind(server, 3));
-        threads.create_thread(std::bind(worker, 'A', 6));
+        threads.create_thread(std::bind(worker, 'B', 7));
 
-        boost::this_thread::sleep(boost::posix_time::seconds(4));
+        boost::this_thread::sleep(boost::posix_time::seconds(10));
         threads.create_thread(std::bind(server, INT_MAX));
         threads.join_all();
     }
