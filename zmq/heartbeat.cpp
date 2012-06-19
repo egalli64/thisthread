@@ -1,6 +1,7 @@
 /**
  * Heartbeating for Paranoid Pirate: http://thisthread.blogspot.com/2012/06/paranoid-pirate-heartbeating.html
  * Server part disscussed here: http://thisthread.blogspot.com/2012/06/paranoid-pirate-heartbeating-server.html
+ * Info on worker: http://thisthread.blogspot.com/2012/06/paranoid-pirate-heartbeating-worker.html
  * Based on the ZGuide: http://zguide.zeromq.org/page:all#Robust-Reliable-Queuing-Paranoid-Pirate-Pattern
  */
 
@@ -17,7 +18,7 @@ namespace
     const char* SKA_BACKEND_CLI = "tcp://localhost:5556";
     const char* SKA_BACKEND_SRV = "tcp://*:5556";
 
-    const uint8_t PHB_UNEXPECTED = 0;
+    const uint8_t PHB_NOTHING = 0;
     const uint8_t PHB_READY = 1;
     const uint8_t PHB_HEARTBEAT = 2;
     const uint8_t PHB_DOWN = 3;
@@ -65,13 +66,6 @@ public:
         items_[0].revents = 0;
     }
 
-    bool poll()
-    {
-        if(zmq::poll(items_, 1, BASE_INTERVAL * 1000) < 1)
-            return false;
-        return true;
-    }
-
     void reset()
     {
         id_ += idRoot_;
@@ -100,15 +94,17 @@ public:
         sk_->send(PHB_DOWN);
     }
 
-    unsigned char recv()
+    uint8_t recv()
     {
+        if(zmq::poll(items_, 1, BASE_INTERVAL * 1000) < 1)
+            return PHB_NOTHING;
+
+        uint8_t res = PHB_NOTHING;
         if(items_[0].revents & ZMQ_POLLIN)
-        {
-            items_[0].revents = 0;
-            return sk_->recvAsByte();
-        }
-        else
-            return 0; // no message
+            res = sk_->recvAsByte();
+        items_[0].revents = 0;
+        
+        return res;
     }
 };
 
@@ -143,21 +139,7 @@ public:
     {
         return busy_ > 0 && lifespan_ > 0;
     }
-/*
-    bool poll()
-    {
-        --lifespan_;
 
-        if(zmq::poll(items_, 1, INTERVAL * 1000) > 0)
-        {
-            busy_ = BUSY;
-            return true;
-        }
-
-        --busy_;
-        return false;
-    }
- */
     zmq::Frames recv()
     {
         --lifespan_;
@@ -237,7 +219,7 @@ namespace
             zmq::Frames input = server.recv();
             if(!input.empty())
             {
-                uint8_t control = (input.size() != 2 || input[1].empty()) ? PHB_UNEXPECTED : input[1].at(0);
+                uint8_t control = (input.size() != 2 || input[1].empty()) ? PHB_NOTHING : input[1].at(0);
 
                 switch(control)
                 {
@@ -266,7 +248,7 @@ namespace
         dumpId("server shutdown");
     }
 
-    void worker(char id, int nrMsg)
+    void worker(char id, int lifespan)
     {
         const int PATIENCE = 3;
         HeartbeatWorker worker(id);
@@ -279,7 +261,8 @@ namespace
         while(true)
         {
             dumpId("worker loop", iteration);
-            if(!worker.poll()) // no valid input detected on worker socket
+            uint8_t control = worker.recv();
+            if(control == PHB_NOTHING) // no valid input detected on worker socket
             {
                 if(cycle++ == PATIENCE)
                 {
@@ -297,13 +280,11 @@ namespace
                 else
                     dumpId("worker idle", cycle + patience * 10);
 
-                if(iteration++ == nrMsg)
+                if(iteration++ == lifespan)
                     break;
             }
-            else // polling succeeeded
+            else // polling succeeded
             {
-                uint8_t control = worker.recv();
-
                 if(control == PHB_HEARTBEAT)
                     dumpId("heartbeat received on worker");
                 else
