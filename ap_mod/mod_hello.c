@@ -1,5 +1,8 @@
 /**
  * mod_hello.c
+ *
+ * A minimal Hello World Apache module
+ * Comments and info on http://thisthread.blogspot.com/2012/09/a-minimal-hello-world-apache-module.html
  */
 
 #include <httpd.h>
