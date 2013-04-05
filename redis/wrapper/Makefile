@@ -1,5 +1,6 @@
 # 
 # Makefile for hiredis client
+# See also: http://thisthread.blogspot.com/2013/03/preparing-to-write-redis-client.html
 #
 
 MY_NAME := hrc
