@@ -1,5 +1,6 @@
 /**
  * UniqueRedis.h
+ * For more info see: http://thisthread.blogspot.com/2013/04/a-unique-redis-connection.html
  */
 
 #pragma once
@@ -15,25 +16,24 @@ typedef std::unique_ptr<redisContext, std::function<void(redisContext*)>> Unique
 class UniqueRedis
 {
 public:
-	static UniqueRedis& instance()
-	{
-		static UniqueRedis redis;
-		return redis;
-	}
+    static UniqueRedis& instance()
+    {
+        static UniqueRedis redis;
+        return redis;
+    }
 
-	bool isConnected() { return spContext_ ? true : false; }
+    bool isConnected() { return spContext_ ? true : false; }
 
-	void set(const std::string& key, const std::string& value);
-	std::string get(const std::string& key);
+    void set(const std::string& key, const std::string& value);
+    std::string get(const std::string& key);
 private:
-	UniqueRedis();
-	void free();
+    UniqueRedis();
+    void free();
 
-	UniqueRedis(const UniqueRedis&) = delete;
-	const UniqueRedis& operator=(const UniqueRedis&) = delete;
+    UniqueRedis(const UniqueRedis&) = delete;
+    const UniqueRedis& operator=(const UniqueRedis&) = delete;
 
-	UniqueContext spContext_;
+    UniqueContext spContext_;
 };
 
 } // namespace TTR
-
