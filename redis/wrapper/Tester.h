@@ -1,3 +1,8 @@
+/**
+ * Tester.h
+ * more info on http://thisthread.blogspot.com/2013/04/redis-client-testing.html
+ */
+
 #pragma once
 #include "gtest/gtest.h"
 
@@ -8,4 +13,3 @@ public:
 
     int run() { return RUN_ALL_TESTS(); }
 };
-
