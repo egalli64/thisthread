@@ -35,6 +35,7 @@ public:
         while(true)
         {
             std::unique_lock<std::mutex> lock(mutex_);
+/*
             while(queue_.empty())
             {
                 std::cout << "waiting queue" << std::endl;
@@ -42,6 +43,9 @@ public:
 //                if(queue_.empty())
 //                    std::cout << "spurious ";
             }
+ */
+            cond_.wait(lock, [this] { return !queue_.empty(); });
+
             int message = queue_.front();
             queue_.pop();
 
