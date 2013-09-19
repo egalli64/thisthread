@@ -1,8 +1,10 @@
 /*
  * cj101aa.cpp
  *
- * http://code.google.com/codejam/contest/544101/dashboard#s=p0
+ * Info: http://thisthread.blogspot.com/2013/09/connect-4-rotate.html
+ *
  * Code Jam Round 1A 2010 Problem A. Rotate
+ * http://code.google.com/codejam/contest/544101/dashboard#s=p0
  */
 
 #include <iostream>
@@ -14,9 +16,10 @@
 
 namespace
 {
-const char* results[] { "Neither", "Red", "Blue", "Both", "Unexpected" };
-enum Results { Neither, Red, Blue, Both, Unexpected };
-const int maxSize = 50;
+const char* results[] { "Neither", "Red", "Blue", "Both" };
+enum Results { Neither, Red, Blue, Both };
+const unsigned minSize = 3;
+const unsigned maxSize = 50;
 }
 
 using Board = std::array<std::array<char, maxSize>, maxSize>;
@@ -33,6 +36,7 @@ private:
 
     bool consistency(const Input& input);
 
+    bool setWinner(unsigned row, unsigned col);
     bool checkRight(unsigned row, unsigned col);
     bool checkDown(unsigned row, unsigned col);
     bool checkRightUp(unsigned row, unsigned col);
@@ -45,12 +49,22 @@ public:
 
 bool Rotator::consistency(const Input& input)
 {
-    if(size_ > maxSize || input.size() != size_)
+    if(size_ < minSize || size_ > maxSize || input.size() != size_)
         return false;
 
     for(auto it = input.begin(); it != input.end(); ++it)
         if(it->size() != size_)
             return false;
+
+    return true;
+}
+
+bool Rotator::setWinner(unsigned row, unsigned col)
+{
+    if(board_[row][col] == 'R')
+        red_ = true;
+    else
+        blue_ = true;
 
     return true;
 }
@@ -64,8 +78,7 @@ bool Rotator::checkRight(unsigned row, unsigned col)
         if(board_[row][col] != board_[row][col + k])
             return false;
 
-    board_[row][col] == 'R' ? red_ = true : blue_ = true;
-    return true;
+    return setWinner(row, col);
 }
 
 bool Rotator::checkDown(unsigned row, unsigned col)
@@ -77,8 +90,7 @@ bool Rotator::checkDown(unsigned row, unsigned col)
         if(board_[row][col] != board_[row + k][col])
             return false;
 
-    board_[row][col] == 'R' ? red_ = true : blue_ = true;
-    return true;
+    return setWinner(row, col);
 }
 
 bool Rotator::checkRightUp(unsigned row, unsigned col)
@@ -90,8 +102,7 @@ bool Rotator::checkRightUp(unsigned row, unsigned col)
         if(board_[row][col] != board_[row - k][col + k])
             return false;
 
-    board_[row][col] == 'R' ? red_ = true : blue_ = true;
-    return true;
+    return setWinner(row, col);
 }
 
 bool Rotator::checkRightDown(unsigned row, unsigned col)
@@ -103,8 +114,7 @@ bool Rotator::checkRightDown(unsigned row, unsigned col)
         if(board_[row][col] != board_[row + k][col + k])
             return false;
 
-    board_[row][col] == 'R' ? red_ = true : blue_ = true;
-    return true;
+    return setWinner(row, col);
 }
 
 Rotator::Rotator(unsigned size, unsigned len, const Input& input) : size_(size), len_(len)
