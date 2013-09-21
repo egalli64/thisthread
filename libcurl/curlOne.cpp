@@ -1,8 +1,7 @@
 /**
- * curlOne.cpp
+ * Hello libcurl world
  *
- * Sep 19, 2013
- * egalli
+ * Info: http://thisthread.blogspot.com/2013/09/hello-libcurl-world.html
  */
 
 #include <curl/curl.h>
