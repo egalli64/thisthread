@@ -1,8 +1,7 @@
 /**
  * annihilator.cpp
  *
- * Sep 26, 2013
- * egalli
+ * Info: http://thisthread.blogspot.com/2013/09/bidimensional-array-annihilator.html
  */
 
 #include <array>
