@@ -1,3 +1,6 @@
+/**
+ * Info on http://thisthread.blogspot.com/2014/02/insertion-sort.html
+ */
 #include <vector>
 
 void insertionSort(std::vector<int>& data)
