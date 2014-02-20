@@ -1,3 +1,7 @@
+/**
+ * info http://thisthread.blogspot.com/2014/02/merge-sort.html
+ */
+
 #include <vector>
 #include <queue>
 
