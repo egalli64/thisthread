@@ -1,5 +1,5 @@
 /**
- * ita71.cpp
+ * info: http://thisthread.blogspot.com/2014/02/maximum-subarray-by-divide-and-conquer.html
  */
 
 #include <vector>
