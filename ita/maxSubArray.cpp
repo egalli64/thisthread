@@ -62,6 +62,25 @@ Info maxSubArray(const Vector& data, int left, int right)
   return max(subLeft, subRight, crossing);
 }
 
+int maxSubAr(const Vector& data)
+{
+  int sum = 0;
+  int sumTmp = 0;
+
+  for(unsigned i = 0; i < data.size(); ++i)
+  {
+    if(int value = sumTmp + data[i] > 0)
+      sumTmp = value;
+    else
+      sumTmp = 0;
+
+    if(sumTmp > sum)
+      sum = sumTmp;
+  }
+
+  return sum;
+}
+
 Info maxSubArray(const Vector& data)
 {
   int left = 0;
@@ -169,3 +188,24 @@ TEST(MaxSubLin, Simple2)
   EXPECT_EQ(6, sub[1]);
   EXPECT_EQ(7, sub[2]);
 }
+
+TEST(MaxSubX, Simple)
+{
+  EXPECT_EQ(21, maxSubAr({ 2, 3, 4, 5, 7 }));
+}
+
+TEST(MaxSubX, Simple2)
+{
+  EXPECT_EQ(7, maxSubAr({-2, -5, 6, -2, -3, 1, 5, -6}));
+}
+
+TEST(MaxSubX, SimpleSecond)
+{
+  EXPECT_EQ(7, maxSubAr({3, -5, 6, 1, -3}));
+}
+
+TEST(MaxSubX, AnotherSecond)
+{
+  EXPECT_EQ(12, maxSubAr({3, -1, 2, -6, 12}));
+}
+
