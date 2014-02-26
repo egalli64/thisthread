@@ -1,5 +1,6 @@
 /**
  * info: http://thisthread.blogspot.com/2014/02/maximum-subarray-by-divide-and-conquer.html
+ *       http://thisthread.blogspot.com/2014/02/maximum-subarray-by-kadane.html
  */
 
 #include <vector>
