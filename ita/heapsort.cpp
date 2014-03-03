@@ -1,14 +1,9 @@
 /**
- * heapsort.cpp
- *
- * Feb 25, 2014
- * egalli
+ * info: http://thisthread.blogspot.com/2014/03/heapsort.html 
  */
 
 #include <vector>
-#include <iostream>
 #include <algorithm>
-#include <iterator>
 
 typedef std::vector<int> Vector;
 
