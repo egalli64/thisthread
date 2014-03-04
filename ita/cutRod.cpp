@@ -1,8 +1,5 @@
 /**
- * ita363.cpp
- *
- * Feb 28, 2014
- * egalli
+ * cutRod.cpp 
  */
 
 #include <vector>
