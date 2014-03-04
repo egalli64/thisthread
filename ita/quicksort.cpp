@@ -1,5 +1,5 @@
 /**
- * quicksort.cpp
+ * info: http://thisthread.blogspot.com/2014/03/quicksort.html
  */
 
 #include <vector>
