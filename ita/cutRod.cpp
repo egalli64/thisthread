@@ -1,5 +1,5 @@
 /**
- * cutRod.cpp 
+ * info: http://thisthread.blogspot.com/2014/03/rod-cutting-by-dynamic-programming.html
  */
 
 #include <vector>
@@ -7,7 +7,7 @@
 
 typedef std::vector<int> Vector;
 
-// recursive top-down
+// recursive
 unsigned cutRodRecursive(const Vector& price, unsigned size)
 {
   unsigned result = 0;
@@ -17,7 +17,7 @@ unsigned cutRodRecursive(const Vector& price, unsigned size)
   return result;
 }
 
-// memoized top-down
+// top-down DP
 unsigned memoCutRod(const Vector& price, unsigned size, Vector& memo)
 {
   if(memo[size] >= 0)
@@ -38,7 +38,7 @@ unsigned cutRodMemoized(const Vector& price, unsigned size)
   return memoCutRod(price, size, memo);
 }
 
-// memoized bottom-up
+// bottom-up DP
 unsigned cutRod(const Vector& price, unsigned size)
 {
   Vector memo(size + 1);
@@ -59,7 +59,6 @@ TEST(CutRod, Simple)
 {
   Vector price { 1, 5, 8, 9, 10, 17, 17, 20, 24, 30 };
 
-  // best cut: 1 5 8 10 13 17 18 22 25 30
   ASSERT_EQ(30, cutRodRecursive(price, 10));
   ASSERT_EQ(30, cutRodMemoized(price, 10));
   ASSERT_EQ(30, cutRod(price, 10));
