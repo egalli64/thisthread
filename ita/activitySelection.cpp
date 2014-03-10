@@ -1,7 +1,7 @@
 /**
  * activitySelection.cpp
  *
- * http://en.wikipedia.org/wiki/Activity_selection_problem
+ * info: http://thisthread.blogspot.com/2014/03/greedy-algorithm-for-activity-selection.html
  */
 
 #include <utility>
@@ -46,7 +46,6 @@ TEST(ActSel, Simple2)
   Activities input { {1, 4}, {3, 5}, {0, 6}, {3, 9}, {5, 9}, {5, 7}, {6, 10}, {8, 11}, {8, 12}, {2, 14}, {12, 16} };
 
   Activities output = selectMax(input);
-  ASSERT_EQ(4, output.size());
   ASSERT_EQ(4, output.size());
   for(unsigned i = 1; i < output.size(); ++i)
     ASSERT_LE(output[i-1].second, output[i].first);
