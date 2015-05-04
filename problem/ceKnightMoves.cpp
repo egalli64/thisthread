@@ -1,9 +1,8 @@
 /*
  * ceKnightMoves.cpp
  *
- *  Created on: May 3, 2015
- *      Author: manny
- *  https://www.codeeval.com/open_challenges/180/
+ * info: http://thisthread.blogspot.com/2015/05/codeeval-knight-moves.html 
+ * source: https://www.codeeval.com/open_challenges/180/
  */
 
 #include <string>
@@ -18,13 +17,14 @@ std::string solution(const std::string& input)
 
     std::string result;
 
-    auto push_back = [&result] (char x, char y) {
+    auto push_back = [&result] (char x, char y)
+    {
         result.push_back(x);
         result.push_back(y);
         result.push_back(' ');
     };
 
-    auto add = [&](char x, int step)
+    auto add = [&input, &push_back](char x, int step)
     {
         if(input[1] > '0' + step)
             push_back(x, input[1] - step);
@@ -85,16 +85,14 @@ TEST(Ce18, Given5)
 }
 
 /*
- #include <iostream>
- #include <fstream>
+#include <iostream>
+#include <fstream>
 
- int main(int argc, char *argv[])
- {
- std::ifstream stream(argv[1]);
- std::string line;
- while (std::getline(stream, line))
- {
- std::cout << solution(line) << std::endl;
- }
- }
+int main(int argc, char* argv[])
+{
+    std::ifstream stream(argv[1]);
+    std::string line;
+    while (std::getline(stream, line))
+        std::cout << solution(line) << std::endl;
+}
  */
