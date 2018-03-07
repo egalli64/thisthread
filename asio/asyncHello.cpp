@@ -1,32 +1,32 @@
 /**
- * Asynchronous Hello Asio
+ * ASIO system_timer on std chrono to asynch wait for a sec
  *
- * Info: http://thisthread.blogspot.com/2013/08/waiting-asynchronously.html
+ * Author:   Manny egalli64@gmail.com
+ * Info:     http://thisthread.blogspot.com/2018/03/boost-asio-asynchronous-wait-on-timer.html
+ * Based on: Timer.2 - Using a timer asynchronously
+ *           http://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio/tutorial/tuttimer2.html
  */
 
 #include <iostream>
-#include <chrono>
-#include <boost/asio.hpp>
-#include <boost/asio/steady_timer.hpp>
+#include <boost/asio/system_timer.hpp>
+#include "basic_skills.h"
 
-namespace ba = boost::asio;
-namespace sc = std::chrono;
-
-void hello(const boost::system::error_code& ec)
+namespace
 {
-    std::cout << "delayed hello [" << ec.value() << ']'  << std::endl;
+	void hello(const bs::error_code& ec)
+	{
+		std::cout << "delayed hello [" << ec.value() << "] " << std::flush;
+	}
 }
 
-int main()
+void timer2(ba::io_context& io)
 {
-    std::cout << "starting" << std::endl;
+	std::cout << "2) Starting ... " << std::flush;
 
-    ba::io_service aios;
+	ba::system_timer timer{ io, sc::seconds(1) };
+	timer.async_wait(hello);
+	std::cout << "hello " << std::flush;
 
-    ba::steady_timer timer(aios, sc::seconds(1));
-    timer.async_wait(hello);
-    std::cout << "hello" << std::endl;
-    aios.run();
-
-    std::cout << "done" << std::endl;
+	io.run();
+	std::cout << "done" << std::endl;
 }
