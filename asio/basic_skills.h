@@ -14,10 +14,10 @@ namespace ba = boost::asio;
 namespace bs = boost::system;
 namespace sc = std::chrono;
 
-void timer1(ba::io_context& io);
-void timer2(ba::io_context& io);
-void timer2a(ba::io_context& io);
-void timer3(ba::io_context& io);
-void timer3a(ba::io_context& io);
-void timer4(ba::io_context& io);
-void timer5(ba::io_context& io);
+extern void timer1(ba::io_context& io);
+extern void timer2(ba::io_context& io);
+extern void timer2a(ba::io_context& io);
+extern void timer3(ba::io_context& io);
+extern void timer3a(ba::io_context& io);
+extern void timer4(ba::io_context& io);
+extern void timer5(ba::io_context& io);
