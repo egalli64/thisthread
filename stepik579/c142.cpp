@@ -1,12 +1,12 @@
 /**
-* Given an integer n, create a new vector, add all of the numbers from 1 to n (inclusive) to the vector,
-* and then return the vector
-*
-* author: Manny egalli64@gmail.com
-* info: http://thisthread.blogspot.com/
-*		https://stepik.org/lesson/26055/step/11?unit=8087
-* 1. Introduction and review - the fuss of C++
-*/
+ * Given an integer n, create a new vector, add all of the numbers from 1 to n (inclusive) to the vector,
+ * and then return the vector
+ *
+ * author: Manny egalli64@gmail.com
+ * info: http://thisthread.blogspot.com/
+ *		https://stepik.org/lesson/26055/step/11
+ * 1. Introduction and review - the fuss of C++
+ */
 #include "gtest/gtest.h"
 #include <iostream>
 #include <numeric>

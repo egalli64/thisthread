@@ -3,7 +3,7 @@
  *
  * author: Manny egalli64@gmail.com
  * info: http://thisthread.blogspot.com/
- *		 https://stepik.org/lesson/26055/step/2?unit=8087
+ *		 https://stepik.org/lesson/26055/step/2
  * 1. Introduction and review - the fuss of C++
  */
 #include "gtest/gtest.h"
