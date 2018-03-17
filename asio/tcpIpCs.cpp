@@ -1,99 +1,91 @@
 /**
- * tcpIpCs.cpp
+ * Boost ASIO TCP/IP synchronous client-server
  *
- * http://thisthread.blogspot.com/2011/02/minimal-asio-tcp-server.html
- * http://thisthread.blogspot.com/2011/02/minimal-asio-tcp-client.html
- *
- * http://www.boost.org/doc/libs/1_54_0/doc/html/boost_asio/tutorial/tutdaytime1.html
- * http://www.boost.org/doc/libs/1_54_0/doc/html/boost_asio/tutorial/tutdaytime2.html
+ * Author:   Manny egalli64@gmail.com
+ * Info:     http://thisthread.blogspot.com/2018/03/boost-asio-synchronous-exchange-on-tcpip.html
+ * Based on: Daytime.1 - A synchronous TCP daytime client
+ *           http://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio/tutorial/tutdaytime1.html
+ *           Daytime.2 - A synchronous TCP daytime server
+ *           http://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio/tutorial/tutdaytime2.html
  */
-
 #include <iostream>
 #include <exception>
 #include <array>
+#include <string>
 #include <boost/asio.hpp>
+
+namespace ba = boost::asio;
+namespace bs = boost::system;
+using ba::ip::tcp;
 
 namespace
 {
-const int HELLO_PORT = 50013;
-const char* HELLO_PORT_STR = "50013";
-}
+	const int HELLO_PORT = 50013;
+	const std::string HELLO_PORT_STR{ "50013" };
+	const std::string HOSTNAME{ "localhost" };
 
-void asioTcpServer()
-{
-  try
-  {
-    boost::asio::io_service aios;
-    boost::asio::ip::tcp::acceptor acceptor(aios,
-        boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), HELLO_PORT));
+	void server(ba::io_context& io)
+	{
+		try
+		{
+			tcp::acceptor acceptor{ io, tcp::endpoint(tcp::v6(), HELLO_PORT) };
 
-    // just once
-    {
-      boost::asio::ip::tcp::socket socket(aios);
-      std::cout << "Server ready" << std::endl;
-      acceptor.accept(socket);
+			// just once
+			{
+				tcp::socket socket{ io };
+				std::cout << "Server ready" << std::endl;
+				acceptor.accept(socket);
 
-      std::string message("Hello from ASIO");
-      boost::asio::write(socket, boost::asio::buffer(message));
-    }
-  }
-  catch(std::exception& e)
-  {
-    std::cerr << "Exception: " << e.what() << std::endl;
-  }
-}
+				std::string message{ "Hello from ASIO" };
+				bs::error_code ec; // ignored
+				ba::write(socket, ba::buffer(message), ec);
+			}
+		}
+		catch (std::exception& e)
+		{
+			std::cerr << "Exception: " << e.what() << std::endl;
+		}
+	}
 
-void asioTcpClient(const char* host)
-{
-  try
-  {
-    boost::asio::io_service aios;
+	void client(ba::io_context& io, const std::string& host)
+	{
+		try
+		{
+			tcp::resolver resolver{ io };
+			tcp::resolver::results_type endpoints = resolver.resolve(host, HELLO_PORT_STR);
 
-    boost::asio::ip::tcp::resolver resolver(aios);
-    boost::asio::ip::tcp::resolver::iterator endpoint = resolver.resolve(
-        boost::asio::ip::tcp::resolver::query(host, HELLO_PORT_STR));
-/*
-    boost::asio::ip::tcp::socket socket(aios);
-    boost::system::error_code error = boost::asio::error::host_not_found;
-    boost::asio::ip::tcp::resolver::iterator end;
-    while(error && endpoint != end)
-    {
-      socket.close();
-      socket.connect(*endpoint++, error);
-    }
-    if(error)
-      throw boost::system::system_error(error);
- */
-    boost::asio::ip::tcp::socket socket(aios);
-    // open the connection for the specified endpoint, or throws a system_error
-    boost::asio::connect(socket, endpoint);
+			tcp::socket socket{ io };
+			ba::connect(socket, endpoints);
 
-    for(;;)
-    {
-      std::array<char, 4> buf;
-      boost::system::error_code error;
-      size_t len = socket.read_some(boost::asio::buffer(buf), error);
+			for (;;)
+			{
+				std::array<char, 4> buf;
+				bs::error_code error;
+				size_t len = socket.read_some(ba::buffer(buf), error);
 
-      if(error == boost::asio::error::eof)
-        break; // Connection closed cleanly by peer
-      else if(error)
-        throw boost::system::system_error(error);
+				if (error == ba::error::eof)
+					break; // Connection closed cleanly by peer
+				else if (error)
+					throw bs::system_error(error);
 
-      std::cout.write(buf.data(), len);
-      std::cout << '|';
-    }
-    std::cout << std::endl;
-  }
-  catch(std::exception& e)
-  {
-    std::cerr << e.what() << std::endl;
-  }
+				std::cout.write(buf.data(), len);
+				std::cout << '|';
+			}
+			std::cout << std::endl;
+		}
+		catch (std::exception& e)
+		{
+			std::cerr << e.what() << std::endl;
+		}
+	}
 }
 
 int main(int argc, char* argv[])
 {
-  if(argc > 1)
-    asioTcpClient("localhost");
-  else
-    asioTcpServer();
+	ba::io_context io;
+
+	if (argc > 1)
+		client(io, HOSTNAME);
+	else
+		server(io);
 }
