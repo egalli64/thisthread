@@ -20,7 +20,7 @@ using ba::ip::tcp;
 
 namespace
 {
-	const int HELLO_PORT = 50013;
+	const unsigned short HELLO_PORT = 50013;
 	const std::string HELLO_PORT_STR{ "50013" };
 	const std::string HOSTNAME{ "localhost" };
 
@@ -28,7 +28,7 @@ namespace
 	{
 		try
 		{
-			tcp::acceptor acceptor{ io, tcp::endpoint(tcp::v6(), HELLO_PORT) };
+			tcp::acceptor acceptor{ io, tcp::endpoint{tcp::v6(), HELLO_PORT} };
 
 			// just once
 			{
