@@ -24,5 +24,3 @@ TEST(Test161, exercise5)
 {
 	EXPECT_EQ(23, ex5());
 }
-
-
