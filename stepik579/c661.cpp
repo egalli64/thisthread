@@ -64,9 +64,29 @@ namespace
         }
         current->word = false;
     }
+
+    class Lexicon {
+    public:
+        MultiwayTrie mwt;
+        bool find(const std::string& word);
+        void insert(const std::string& word);
+        void remove(const std::string& word);
+    };
+
+    bool Lexicon::find(const std::string& word) {
+        return mwt.find(word);
+    }
+
+    void Lexicon::insert(const std::string& word) {
+        mwt.insert(word);
+    }
+
+    void Lexicon::remove(const std::string& word) {
+        mwt.remove(word);
+    }
 }
 
-TEST(TestLexicon, Vector)
+TEST(TestMultiwayTrie, Simple)
 {
     MultiwayTrie trie;
 
