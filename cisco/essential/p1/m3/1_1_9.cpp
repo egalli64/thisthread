@@ -10,17 +10,15 @@
  */
 #include <iostream>
 
-using namespace std;
-
 int main()
 {
-    cout << "This computing environment uses:\n";
-    cout << sizeof(char) << " byte for chars\n";
-    cout << sizeof(short int) << " bytes for shorts\n";
-    cout << sizeof(int) << " bytes for ints\n";
-    cout << sizeof(long int) << " bytes for longs\n";
-    cout << sizeof(float) << " bytes for floats\n";
-    cout << sizeof(double) << " bytes for doubles\n";
-    cout << sizeof(bool) << " byte for bools\n";
-    cout << sizeof(void *) << " bytes for pointers\n";
+    std::cout << "This computing environment uses:\n";
+    std::cout << sizeof(char) << " byte for chars\n";
+    std::cout << sizeof(short int) << " bytes for shorts\n";
+    std::cout << sizeof(int) << " bytes for ints\n";
+    std::cout << sizeof(long int) << " bytes for longs\n";
+    std::cout << sizeof(float) << " bytes for floats\n";
+    std::cout << sizeof(double) << " bytes for doubles\n";
+    std::cout << sizeof(bool) << " byte for bools\n";
+    std::cout << sizeof(void *) << " bytes for pointers\n";
 }
