@@ -13,7 +13,8 @@
 
 namespace
 {
-int stack[100];
+constexpr int max_size = 100;
+int stack[max_size];
 int stack_pointer = 0;
 } // namespace
 
