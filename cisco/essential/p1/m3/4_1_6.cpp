@@ -1,6 +1,7 @@
 /*
     Cisco Network Academy - CPA - Programming Essentials in C++
     https://www.netacad.com/courses/programming/essentials-programming-c-plus-plus
+    Part 1, module 3 - Extending expressive power: pointers, functions, and memory
 
     My repository: https://github.com/egalli64/thisthread
 

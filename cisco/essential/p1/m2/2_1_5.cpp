@@ -1,6 +1,7 @@
 /*
     Cisco Network Academy - CPA - Programming Essentials in C++
     https://www.netacad.com/courses/programming/essentials-programming-c-plus-plus
+    Part 1, module 2 - Advanced flow control (if, else, switch; loops) and data aggregates
 
     My repository: https://github.com/egalli64/thisthread
 
