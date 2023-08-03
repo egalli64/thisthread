@@ -39,7 +39,13 @@ int main()
     Pet *a_pet2 = new Dog("Spike");
 
     a_pet1->run();
-    static_cast<Cat *>(a_pet1)->make_sound();
     a_pet2->run();
+
+    // !!! WARNING - use of static cast in a hierarchy could lead to serious problems !!!
+    static_cast<Cat *>(a_pet1)->make_sound();
     static_cast<Dog *>(a_pet2)->make_sound();
+
+    // !!! Legal but silly !!!
+    static_cast<Dog *>(a_pet1)->make_sound();
+    static_cast<Cat *>(a_pet2)->make_sound();
 }
