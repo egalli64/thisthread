@@ -9,29 +9,14 @@
 
     A non-polimorphic hierarchy
  */
+#include "2_1_2.hpp"
 #include <iostream>
 #include <string>
-
-class Pet
-{
-  protected:
-    std::string name;
-
-  public:
-    Pet(const std::string& name)
-    {
-        this->name = name;
-    }
-    void run()
-    {
-        std::cout << name << ": I'm running\n";
-    }
-};
 
 class Dog : public Pet
 {
   public:
-    Dog(const std::string& name) : Pet(name){};
+    Dog(const std::string &name) : Pet(name){};
     void make_sound()
     {
         std::cout << name << ": Woof! Woof!\n";
@@ -41,7 +26,7 @@ class Dog : public Pet
 class Cat : public Pet
 {
   public:
-    Cat(const std::string& name) : Pet(name){};
+    Cat(const std::string &name) : Pet(name){};
     void make_sound()
     {
         std::cout << name << ": Meow! Meow!\n";
