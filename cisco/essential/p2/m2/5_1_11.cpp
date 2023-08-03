@@ -9,7 +9,6 @@
 
     Composition
  */
-
 #include <iostream>
 
 class A
@@ -53,7 +52,11 @@ class B
 class Compo
 {
   public:
-    Compo(){};
+    Compo()
+    {
+        std::cout << "Default Compo ctor\n";
+    };
+
     A f1;
     B f2;
 };
@@ -61,6 +64,8 @@ class Compo
 int main()
 {
     Compo co1;
+
+    std::cout << "No explicit copy ctor for Compo, the default behavior is assumed\n";
     Compo co2 = co1;
 
     co2.f1.do_it();
